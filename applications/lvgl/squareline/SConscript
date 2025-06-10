@@ -1,0 +1,21 @@
+from building import *
+import os
+
+cwd = GetCurrentDir()
+group = []
+src = Glob('*.c')
+CPPPATH = [cwd]
+
+src += Glob('components/*.c')
+src += Glob('screens/*.c')
+src += Glob('images/*.c')
+src += Glob('fonts/*.c')
+
+CPPPATH += [cwd + '/components']
+CPPPATH += [cwd + '/screens']
+CPPPATH += [cwd + '/images']
+CPPPATH += [cwd + '/fonts']
+
+group = DefineGroup('LVGL-demo', src, depend = ['BSP_USING_LVGL', 'PKG_LVGL_USING_SQUARELINE'], CPPPATH = CPPPATH)
+
+Return('group')
