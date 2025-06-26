@@ -128,11 +128,11 @@ static void onenet_cmd_rsp_cb(uint8_t *recv_data, size_t recv_size, uint8_t **re
     if(recv_data[0] == 0x00)
     {
         rt_pin_write(PIN_LED_B, recv_data[1] > 0 ? PIN_HIGH : PIN_LOW);
-        LOG_D("yellow light %d", recv_data[1]);
+        LOG_D("blue light %d", recv_data[1]);
     }else if(recv_data[0] == 0x01)
     {
         rt_pin_write(PIN_LED_R, recv_data[1] > 0 ? PIN_HIGH : PIN_LOW);
-        LOG_D("0000red light %d", recv_data[1]);
+        LOG_D("red light %d", recv_data[1]);
     }
 
     /* user have to malloc memory for response data */
