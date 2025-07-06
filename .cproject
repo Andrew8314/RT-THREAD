@@ -147,6 +147,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/LVGL-v8.3.11/src/widgets}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/LVGL-v8.3.11/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/aht10-v2.1.0}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/ap3216c-v2.0.0}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/cJSON-v1.7.17}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/onenet-v1.2.0/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/pahomqtt-latest/MQTTClient-RT}&quot;"/>
@@ -343,6 +344,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/LVGL-v8.3.11/src/widgets}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/LVGL-v8.3.11/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/aht10-v2.1.0}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/ap3216c-v2.0.0}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/cJSON-v1.7.17}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/onenet-v1.2.0/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc://${ProjName}//packages/pahomqtt-latest/MQTTClient-RT}&quot;"/>

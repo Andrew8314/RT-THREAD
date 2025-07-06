@@ -380,12 +380,22 @@
 /* NXP HAL & SDK Drivers */
 
 /* end of NXP HAL & SDK Drivers */
+
+/* NUVOTON Drivers */
+
+/* end of NUVOTON Drivers */
+
+/* GD32 Drivers */
+
+/* end of GD32 Drivers */
 /* end of HAL & SDK Drivers */
 
 /* sensors drivers */
 
 #define PKG_USING_AHT10
 #define PKG_USING_AHT10_V210
+#define PKG_USING_AP3216C
+#define PKG_USING_AP3216C_V200
 /* end of sensors drivers */
 
 /* touch drivers */

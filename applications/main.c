@@ -11,7 +11,7 @@
 
 int main(void)
 {
-
+    thread_ap3216();
     rt_wlan_connect("禹锦华", "yjh666666");
     onenet_mqtt_init();
     onenet_upload_cycle();

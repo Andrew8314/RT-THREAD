@@ -31,11 +31,11 @@ const char *i2c_bus_name = "i2c3";
 static float humidity = 0, temperature = 0;/////////////////////
 static aht10_device_t dev;
 
+extern rt_mq_t mq_brightness;
+extern rt_mq_t mq_ps_data;
 /* upload random value to temperature*/
 static void onenet_upload_entry(void *parameter)
 {
-    //   int value = 0;
-    rt_thread_mdelay(5000);
 
     while(rt_wlan_is_connected() == RT_FALSE)
     {
@@ -47,15 +47,24 @@ static void onenet_upload_entry(void *parameter)
 
     while (1)
     {
+        rt_uint16_t ps_data;
+        float brightness;
 
-        /* 读取湿度 */
-        humidity = aht10_read_humidity(dev);
-        /* 读取温度 */
-        temperature = aht10_read_temperature(dev);
+        humidity = aht10_read_humidity(dev); /* 读取湿度 */
+        temperature = aht10_read_temperature(dev);   /* 读取温度 */
+
+        rt_mq_recv(mq_brightness, &brightness, sizeof(brightness), RT_WAITING_NO);
+        rt_mq_recv(mq_ps_data, &ps_data, sizeof(ps_data), RT_WAITING_NO);
+        //LOG_D("current ps data: %d.", ps_data);
+        //LOG_D("current brightness: %d.%d(lux).", (int)brightness, ((int)(10 * brightness) % 10));
 
 
+        onenet_mqtt_upload_digit("brightness", (int)brightness);
+        rt_thread_mdelay(10);
+        onenet_mqtt_upload_digit("ps_data", (int)ps_data);
+        rt_thread_mdelay(10);
         onenet_mqtt_upload_digit("temp_value", (int)temperature);
-        rt_thread_delay(1000);  // 延迟秒
+        rt_thread_mdelay(10);
         onenet_mqtt_upload_digit("humidity_value", (int)humidity);
 
 
