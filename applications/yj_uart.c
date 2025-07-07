@@ -19,6 +19,9 @@ int flag=0;
 int finish_flag=0;
 int cx,cy;
 
+/* 消息队列句柄 */
+rt_mq_t mq_uart_rx = RT_NULL;
+
 /* 用于接收消息的信号量 */
 static struct rt_semaphore rx_sem;
 static rt_device_t serial;
@@ -46,6 +49,9 @@ void kz_entry(void *parameter)
 //
 //        }
         sscanf(Uart1send_rx_buf, "%d %d %d", &cx, &cy);
+       // rt_kprintf("Parsed:distance=%d \n",cx);
+        /* 消息队列发送 */
+        rt_mq_urgent(mq_uart_rx, &cx, sizeof(cx));
         rt_thread_mdelay(50);
 
 
@@ -86,7 +92,8 @@ static void serial_thread_entry(void *parameter)
             RxBuffer[ReadCount-1] = '\0';
             RxBuffer[ReadCount-2] = '\0';
             strcpy(Uart1send_rx_buf,RxBuffer);
-            rt_kprintf("aa%s\r\n",Uart1send_rx_buf);
+            //rt_kprintf("aa%s\r\n",Uart1send_rx_buf);
+
             ReadCount = 0;
             finish_flag=1;
             memset(RxBuffer,0x00,sizeof(RxBuffer));
@@ -103,7 +110,7 @@ static void serial_thread_entry(void *parameter)
     }
 }
 
-static int uart_sample(int argc, char *argv[])
+int uart_sample(int argc, char *argv[])
 {
     rt_err_t ret = RT_EOK;
     char uart_name[RT_NAME_MAX];
@@ -134,6 +141,9 @@ static int uart_sample(int argc, char *argv[])
     rt_device_set_rx_indicate(serial, uart_input);
     /* 发送字符串 */
     rt_device_write(serial, 0, str, (sizeof(str) - 1));
+
+    /* 消息队列初始化 */
+    mq_uart_rx = rt_mq_create("mq_uart_rx", 10, sizeof(cx), RT_IPC_FLAG_FIFO);
 
 
     /* 创建 serial 线程 */

@@ -20,6 +20,8 @@
 
 #define PIN_LED_B              GET_PIN(F, 11)      // PF11 :  LED_B        --> LED
 #define PIN_LED_R              GET_PIN(F, 12)      // PF12 :  LED_R        --> LED
+#define PIN_G6              GET_PIN(G, 6)      // PF11 :  LED_B        --> LED
+#define PIN_G7              GET_PIN(G, 7)      // PF12 :  LED_R        --> LED
 
 #ifdef FINSH_USING_MSH
 #include <finsh.h>
@@ -136,7 +138,19 @@ static void onenet_cmd_rsp_cb(uint8_t *recv_data, size_t recv_size, uint8_t **re
     {
         rt_pin_write(PIN_LED_R, recv_data[1] > 0 ? PIN_HIGH : PIN_LOW);
         LOG_D("red light %d", recv_data[1]);
+    }else if(recv_data[0] == 0x11)
+    {
+        rt_pin_write(PIN_G6, PIN_HIGH);
+        rt_pin_write(PIN_G7, PIN_LOW);
+        LOG_D("motor on");
+    }else if(recv_data[0] == 0x22)
+    {
+        rt_pin_write(PIN_G6, PIN_LOW);
+        rt_pin_write(PIN_G7, PIN_LOW);
+        LOG_D("motor off");
     }
+
+
 
     /* user have to malloc memory for response data */
     *resp_data = (uint8_t *) ONENET_MALLOC(strlen(res_buf));
@@ -151,6 +165,8 @@ int onenet_set_cmd_rsp(int argc, char **argv)
 {
     rt_pin_mode(PIN_LED_B,PIN_MODE_OUTPUT);
     rt_pin_mode(PIN_LED_R,PIN_MODE_OUTPUT);
+    rt_pin_mode(PIN_G6,PIN_MODE_OUTPUT);
+    rt_pin_mode(PIN_G7,PIN_MODE_OUTPUT);
     onenet_set_cmd_rsp_cb(onenet_cmd_rsp_cb);
     return 0;
 }

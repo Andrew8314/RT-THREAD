@@ -19,6 +19,9 @@ int main(void)
     show_ui_event();
     thread_rgb1();
 
+    uart_sample();
+
+
     rt_thread_delay(300);  // 延迟秒
 
     return 0;

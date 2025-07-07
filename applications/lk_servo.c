@@ -27,19 +27,42 @@
 static rt_thread_t tid1 = RT_NULL;
 struct rt_device_pwm *pwm_dev1;      /* PWM设备句柄 */
 
+extern rt_mq_t mq_uart_rx;   /* 消息队列句柄 */
+
 rt_uint32_t period1 = 20000000;    /* 周期为20ms ，单位为纳秒ns    20ms*/
 rt_uint32_t dir1 = 1;            /* PWM脉冲宽度值的增减方向 */
 rt_uint32_t pulse1 = 3000000;          /* PWM脉冲宽度值，单位为纳秒ns */
 
-
-void ServoCtrl (uint32_t duty)
+// 初始化定时器为 PWM 模式
+void pwm_init(void)
 {
-    if (duty >= Servo_Left_Max)                  //限制幅值520 0000
-        duty = Servo_Left_Max;
-    else if (duty <= Servo_Right_Min)            //限制幅值80 0000
-        duty = Servo_Right_Min;
+    pwm_dev1 = (struct rt_device_pwm *)rt_device_find(PWM_DEV_NAME);
+    if (pwm_dev1 == RT_NULL)
+    {
+        rt_kprintf("pwm sample run failed! can't find %s device!\n", PWM_DEV_NAME);
+        return RT_ERROR;
+    }
+    /* 设置PWM周期和脉冲宽度默认值 */
+    rt_pwm_set(pwm_dev1, PWM_DEV_CHANNEL, period1, pulse1);
+    /* 使能设备 */
+    rt_pwm_enable(pwm_dev1, PWM_DEV_CHANNEL);
+    /* 设置PWM周期和脉冲宽度默认值 */
+    rt_pwm_set(pwm_dev1, PWM_DEV_CHANNEL1, period1, pulse1);
+    /* 使能设备 */
+    rt_pwm_enable(pwm_dev1, PWM_DEV_CHANNEL1);
 
-    rt_pwm_set(pwm_dev, PWM_DEV_CHANNEL, period, duty);
+}
+
+void ServoCtrl (int angle)
+{
+    uint32_t pwm_value = Servo_Right_Min + ((Servo_Left_Max - Servo_Right_Min) * angle) / 180;
+    if (pwm_value >= Servo_Left_Max)                  //限制幅值520 0000
+        pwm_value = Servo_Left_Max;
+    else if (pwm_value <= Servo_Right_Min)            //限制幅值80 0000
+        pwm_value = Servo_Right_Min;
+
+
+    rt_pwm_set(pwm_dev1, PWM_DEV_CHANNEL1, period1, pwm_value);
 }
 
 static void lk_servo_entry(void *parameter)
