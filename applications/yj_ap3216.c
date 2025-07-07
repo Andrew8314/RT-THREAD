@@ -36,12 +36,13 @@ static void ap3216_entry(void *parameter)
         float brightness;
 
         ps_data = ap3216c_read_ps_data(dev);
-        // LOG_D("current ps data: %d.", ps_data);
         rt_mq_urgent(mq_ps_data, &ps_data, sizeof(ps_data));
+        //LOG_D("current ps data: %d.", ps_data);
 
         brightness = ap3216c_read_ambient_light(dev);
-        // LOG_D("current brightness: %d.%d(lux).", (int)brightness, ((int)(10 * brightness) % 10));
         rt_mq_urgent(mq_brightness, &brightness, sizeof(brightness));
+        //LOG_D("current brightness: %d.%d(lux).", (int)brightness, ((int)(10 * brightness) % 10));
+
         rt_thread_mdelay(200);
     }
 }
@@ -60,11 +61,11 @@ void thread_ap3216(void)
     if (tid1 != RT_NULL)
     {
         rt_thread_startup(tid1);
-        rt_kprintf("creating ap3216 rt_thread_startup\n");
+        rt_kprintf("ap3216 thread_startup\n");
     }
     else
     {
-        LOG_E("app2_ap3216_example thread create failed");
+        LOG_E("ap3216_thread create failed");
     }
 }
 

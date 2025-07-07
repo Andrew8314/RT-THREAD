@@ -5,9 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <onenet.h>
-#include "aht10.h"
 #include <stdio.h>
-
 
 #define DBG_ENABLE
 #define DBG_COLOR
@@ -25,15 +23,14 @@
 
 #ifdef FINSH_USING_MSH
 #include <finsh.h>
-
-
-const char *i2c_bus_name = "i2c3";
-static float humidity = 0, temperature = 0;/////////////////////
-static aht10_device_t dev;
+/*version=2018-10-31&res=products%2FpbjBcphonD%2Fdevices%2F1&et=99464131545&method=md5&sign=yj4zWVXHmHU%2FK0vwsm4%2BMA%3D%3D*/
 
 extern rt_mq_t mq_brightness;
 extern rt_mq_t mq_ps_data;
-/* upload random value to temperature*/
+extern rt_mq_t mq_hum;
+extern rt_mq_t mq_tem;
+
+/* upload random value */
 static void onenet_upload_entry(void *parameter)
 {
 
@@ -42,23 +39,17 @@ static void onenet_upload_entry(void *parameter)
         rt_thread_mdelay(1000);
     }
 
-    dev = aht10_init(i2c_bus_name);
-
-
     while (1)
     {
         rt_uint16_t ps_data;
-        float brightness;
+        float brightness, humidity, temperature;
 
-        humidity = aht10_read_humidity(dev); /* 读取湿度 */
-        temperature = aht10_read_temperature(dev);   /* 读取温度 */
-
+        rt_mq_recv(mq_hum, &humidity, sizeof(humidity), RT_WAITING_NO);
+        rt_mq_recv(mq_tem, &temperature, sizeof(temperature), RT_WAITING_NO);
         rt_mq_recv(mq_brightness, &brightness, sizeof(brightness), RT_WAITING_NO);
         rt_mq_recv(mq_ps_data, &ps_data, sizeof(ps_data), RT_WAITING_NO);
-        //LOG_D("current ps data: %d.", ps_data);
+        //LOG_D("humidity   : %d.%d %%", (int)humidity, (int)(humidity * 10) % 10);
         //LOG_D("current brightness: %d.%d(lux).", (int)brightness, ((int)(10 * brightness) % 10));
-
-
         onenet_mqtt_upload_digit("brightness", (int)brightness);
         rt_thread_mdelay(10);
         onenet_mqtt_upload_digit("ps_data", (int)ps_data);
@@ -73,10 +64,13 @@ static void onenet_upload_entry(void *parameter)
 }
 
 
-int onenet_upload_cycle(void)
+int thread_onenet_upload(void)
 {
-    rt_thread_t tid;
 
+    onenet_mqtt_init();
+    onenet_set_cmd_rsp();
+
+    rt_thread_t tid;
     tid = rt_thread_create("onenet_send",
             onenet_upload_entry,
             RT_NULL,
@@ -90,7 +84,7 @@ int onenet_upload_cycle(void)
 
     return 0;
 }
-MSH_CMD_EXPORT(onenet_upload_cycle, send data to OneNET cloud cycle);
+MSH_CMD_EXPORT(thread_onenet_upload, send data to OneNET cloud cycle);
 
 
 int onenet_publish_digit(int argc, char **argv)

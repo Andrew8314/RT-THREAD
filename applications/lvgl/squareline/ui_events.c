@@ -4,16 +4,20 @@
 // Project name: SquareLine_Project
 
 #include "ui.h"
-#include "aht10.h"
 
-static aht10_device_t dev;
 static char sensor_buf[32] = {0};
 static char sensor_buf1[32] = {0};/////////
 
+extern rt_mq_t mq_hum;
+extern rt_mq_t mq_tem;
+
 void show_callback(struct lv_timer_t *param)
 {
-    float temperature = aht10_read_temperature(dev);
-    float humidity = aht10_read_humidity(dev);
+    float brightness, humidity, temperature;
+
+    rt_mq_recv(mq_hum, &humidity, sizeof(humidity), RT_WAITING_NO);
+    rt_mq_recv(mq_tem, &temperature, sizeof(temperature), RT_WAITING_NO);
+
     rt_sprintf(sensor_buf, "%.2f°\n", temperature);
     lv_label_set_text(ui_Label1, sensor_buf);
     rt_sprintf(sensor_buf1, "%.2f%%\n", humidity);
@@ -22,13 +26,6 @@ void show_callback(struct lv_timer_t *param)
 
 void show_ui_event(lv_event_t * e)
 {
-    dev = aht10_init("i2c3");
-    if (dev == RT_NULL)
-    {
-        rt_kprintf("The sensor initializes failure\n");
-        return;
-    }
-
     // Your code here
     lv_timer_t * timer = lv_timer_create(show_callback, 1000, NULL);
     lv_timer_enable(true);

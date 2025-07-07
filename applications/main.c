@@ -11,12 +11,13 @@
 
 int main(void)
 {
-    thread_ap3216();
+
     rt_wlan_connect("禹锦华", "yjh666666");
-    onenet_mqtt_init();
-    onenet_upload_cycle();
-    onenet_set_cmd_rsp();
+    thread_ap3216();
+    thread_aht21();
+    thread_onenet_upload();
     show_ui_event();
+    thread_rgb1();
 
     rt_thread_delay(300);  // 延迟秒
 
