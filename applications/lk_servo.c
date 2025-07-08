@@ -31,7 +31,7 @@ extern rt_mq_t mq_uart_rx;   /* 消息队列句柄 */
 
 rt_uint32_t period1 = 20000000;    /* 周期为20ms ，单位为纳秒ns    20ms*/
 rt_uint32_t dir1 = 1;            /* PWM脉冲宽度值的增减方向 */
-rt_uint32_t pulse1 = 3000000;          /* PWM脉冲宽度值，单位为纳秒ns */
+rt_uint32_t pulse1 = 4700000;          /* PWM脉冲宽度值，单位为纳秒ns */
 
 // 初始化定时器为 PWM 模式
 void pwm_init(void)
@@ -63,6 +63,18 @@ void ServoCtrl (int angle)
 
 
     rt_pwm_set(pwm_dev1, PWM_DEV_CHANNEL1, period1, pwm_value);
+}
+
+void ServoCtrl1 (int angle)
+{
+    uint32_t pwm_value = Servo_Right_Min + ((Servo_Left_Max - Servo_Right_Min) * angle) / 180;
+    if (pwm_value >= Servo_Left_Max)                  //限制幅值520 0000
+        pwm_value = Servo_Left_Max;
+    else if (pwm_value <= Servo_Right_Min)            //限制幅值80 0000
+        pwm_value = Servo_Right_Min;
+
+
+    rt_pwm_set(pwm_dev1, PWM_DEV_CHANNEL, period1, pwm_value);
 }
 
 static void lk_servo_entry(void *parameter)

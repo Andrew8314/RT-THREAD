@@ -27,6 +27,8 @@ static rt_thread_t tid1 = RT_NULL;
 
 rt_mq_t mq_brightness = RT_NULL;
 rt_mq_t mq_ps_data = RT_NULL;
+rt_mq_t mq_ps_data1 = RT_NULL;
+rt_mq_t mq_ps_data2 = RT_NULL;
 
 static void ap3216_entry(void *parameter)
 {
@@ -37,6 +39,9 @@ static void ap3216_entry(void *parameter)
 
         ps_data = ap3216c_read_ps_data(dev);
         rt_mq_urgent(mq_ps_data, &ps_data, sizeof(ps_data));
+        rt_mq_urgent(mq_ps_data1, &ps_data, sizeof(ps_data));
+        rt_mq_urgent(mq_ps_data2, &ps_data, sizeof(ps_data));
+
         //LOG_D("current ps data: %d.", ps_data);
 
         brightness = ap3216c_read_ambient_light(dev);
@@ -55,6 +60,8 @@ void thread_ap3216(void)
     // 初始化消息队列
     mq_brightness = rt_mq_create("mq_bright", 10, sizeof(brightness), RT_IPC_FLAG_FIFO);
     mq_ps_data = rt_mq_create("mq_distance", 10, sizeof(distance), RT_IPC_FLAG_FIFO);
+    mq_ps_data1 = rt_mq_create("mq_dis1", 10, sizeof(distance), RT_IPC_FLAG_FIFO);
+    mq_ps_data2 = rt_mq_create("mq_dis2", 10, sizeof(distance), RT_IPC_FLAG_FIFO);
 
     // 创建线程
     tid1 = rt_thread_create("thread_ap3216", ap3216_entry, RT_NULL, THREAD_STACK_SIZE, THREAD_PRIORITY, THREAD_TIMESLICE);

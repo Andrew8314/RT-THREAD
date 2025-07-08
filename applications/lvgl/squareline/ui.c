@@ -19,6 +19,12 @@ lv_obj_t * ui_Image4;
 lv_obj_t * ui_Image5;
 lv_obj_t * ui_Label1;
 lv_obj_t * ui_Label4;
+lv_obj_t * ui_Panel4;
+lv_obj_t * ui_Panel5;
+lv_obj_t * ui_Label5;
+lv_obj_t * ui_Label6;
+lv_obj_t * ui_Image1;
+lv_obj_t * ui_Image2;
 // CUSTOM VARIABLES
 lv_obj_t * uic_Label1;
 

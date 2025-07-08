@@ -20,7 +20,8 @@ int finish_flag=0;
 int cx,cy;
 
 /* 消息队列句柄 */
-rt_mq_t mq_uart_rx = RT_NULL;
+rt_mq_t mq_uart_rx_cx = RT_NULL;
+rt_mq_t mq_uart_rx_cy = RT_NULL;
 
 /* 用于接收消息的信号量 */
 static struct rt_semaphore rx_sem;
@@ -51,7 +52,9 @@ void kz_entry(void *parameter)
         sscanf(Uart1send_rx_buf, "%d %d %d", &cx, &cy);
        // rt_kprintf("Parsed:distance=%d \n",cx);
         /* 消息队列发送 */
-        rt_mq_urgent(mq_uart_rx, &cx, sizeof(cx));
+        rt_mq_urgent(mq_uart_rx_cx, &cx, sizeof(cx));
+        rt_mq_urgent(mq_uart_rx_cy, &cy, sizeof(cy));
+
         rt_thread_mdelay(50);
 
 
@@ -143,12 +146,13 @@ int uart_sample(int argc, char *argv[])
     rt_device_write(serial, 0, str, (sizeof(str) - 1));
 
     /* 消息队列初始化 */
-    mq_uart_rx = rt_mq_create("mq_uart_rx", 10, sizeof(cx), RT_IPC_FLAG_FIFO);
+    mq_uart_rx_cx = rt_mq_create("mq_uart_cx", 10, sizeof(cx), RT_IPC_FLAG_FIFO);
+    mq_uart_rx_cy = rt_mq_create("mq_uart_cy", 10, sizeof(cy), RT_IPC_FLAG_FIFO);
 
 
     /* 创建 serial 线程 */
     rt_thread_t thread = rt_thread_create("serial", serial_thread_entry, RT_NULL, 1024, 25, 10);
-    rt_thread_t thread1111 = rt_thread_create("seria1111", kz_entry, RT_NULL, 4096, 25, 5);
+    rt_thread_t thread1111 = rt_thread_create("seria1111", kz_entry, RT_NULL, 1024, 25, 10);
 
     /* 创建成功则启动线程 */
     if (thread != RT_NULL)

@@ -36,10 +36,16 @@ extern rt_mq_t mq_tem;
 static void onenet_upload_entry(void *parameter)
 {
 
+    //等待10s，wifi连接完成
+    rt_thread_mdelay(10000);
     while(rt_wlan_is_connected() == RT_FALSE)
     {
         rt_thread_mdelay(1000);
     }
+
+    onenet_mqtt_init();
+    onenet_set_cmd_rsp();
+    rt_thread_mdelay(1000);
 
     while (1)
     {
@@ -47,21 +53,25 @@ static void onenet_upload_entry(void *parameter)
         float brightness, humidity, temperature;
 
         rt_mq_recv(mq_hum, &humidity, sizeof(humidity), RT_WAITING_NO);
-        rt_mq_recv(mq_tem, &temperature, sizeof(temperature), RT_WAITING_NO);
-        rt_mq_recv(mq_brightness, &brightness, sizeof(brightness), RT_WAITING_NO);
-        rt_mq_recv(mq_ps_data, &ps_data, sizeof(ps_data), RT_WAITING_NO);
-        //LOG_D("humidity   : %d.%d %%", (int)humidity, (int)(humidity * 10) % 10);
-        //LOG_D("current brightness: %d.%d(lux).", (int)brightness, ((int)(10 * brightness) % 10));
-        onenet_mqtt_upload_digit("brightness", (int)brightness);
+        onenet_mqtt_upload_digit("humidity_value", (int)humidity);
         rt_thread_mdelay(10);
+
+        rt_mq_recv(mq_ps_data, &ps_data, sizeof(ps_data), RT_WAITING_NO);
         onenet_mqtt_upload_digit("ps_data", (int)ps_data);
         rt_thread_mdelay(10);
+        //  rt_kprintf("current ps data: %d.", ps_data);
+
+        rt_mq_recv(mq_brightness, &brightness, sizeof(brightness), RT_WAITING_NO);
+        onenet_mqtt_upload_digit("brightness", (int)brightness);
+        rt_thread_mdelay(10);
+
+        rt_mq_recv(mq_tem, &temperature, sizeof(temperature), RT_WAITING_NO);
         onenet_mqtt_upload_digit("temp_value", (int)temperature);
         rt_thread_mdelay(10);
-        onenet_mqtt_upload_digit("humidity_value", (int)humidity);
-
-
+        //LOG_D("humidity   : %d.%d %%", (int)humidity, (int)(humidity * 10) % 10);
+        //LOG_D("current brightness: %d.%d(lux).", (int)brightness, ((int)(10 * brightness) % 10));
         rt_thread_delay(rt_tick_from_millisecond(5 * 1000));
+
     }
 }
 
@@ -69,8 +79,6 @@ static void onenet_upload_entry(void *parameter)
 int thread_onenet_upload(void)
 {
 
-    onenet_mqtt_init();
-    onenet_set_cmd_rsp();
 
     rt_thread_t tid;
     tid = rt_thread_create("onenet_send",

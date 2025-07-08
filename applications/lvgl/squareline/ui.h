@@ -29,6 +29,12 @@ extern lv_obj_t * ui_Image4;
 extern lv_obj_t * ui_Image5;
 extern lv_obj_t * ui_Label1;
 extern lv_obj_t * ui_Label4;
+extern lv_obj_t * ui_Panel4;
+extern lv_obj_t * ui_Panel5;
+extern lv_obj_t * ui_Label5;
+extern lv_obj_t * ui_Label6;
+extern lv_obj_t * ui_Image1;
+extern lv_obj_t * ui_Image2;
 // CUSTOM VARIABLES
 extern lv_obj_t * uic_Label1;
 
@@ -40,6 +46,8 @@ extern lv_obj_t * ui____initial_actions0;
 LV_IMG_DECLARE(ui_img_1843987647);    // assets/智能家居.png
 LV_IMG_DECLARE(ui_img_1481188968);    // assets/空气温度.png
 LV_IMG_DECLARE(ui_img_1823885662);    // assets/空气湿度.png
+LV_IMG_DECLARE(ui_img_brightness_png);    // assets/brightness.png
+LV_IMG_DECLARE(ui_img_ps_data_png);    // assets/ps_data.png
 
 // UI INIT
 void ui_init(void);

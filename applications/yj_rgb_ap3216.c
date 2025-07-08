@@ -34,7 +34,7 @@ enum{
     EXTERN_LED_17,
     EXTERN_LED_18,
 };
-extern rt_mq_t mq_ps_data;
+extern rt_mq_t mq_ps_data1;
 rt_thread_t led_matrix_thread;
 static rt_thread_t tid1 = RT_NULL;
 
@@ -50,7 +50,7 @@ void rgb1_entry(void *parameter)
     {
         rt_uint16_t ps_data;
 
-        if (rt_mq_recv(mq_ps_data, &ps_data, sizeof(ps_data), RT_WAITING_NO) == RT_EOK)
+        if (rt_mq_recv(mq_ps_data1, &ps_data, sizeof(ps_data), RT_WAITING_NO) == RT_EOK)
         {
             //rt_kprintf("current ps data: %d.", ps_data);
 
@@ -78,7 +78,7 @@ void rgb1_entry(void *parameter)
 int thread_rgb1(void)
 {
 
-    tid1 = rt_thread_create("rgb1_entry", rgb1_entry, RT_NULL, 1024, 21, 10);
+    tid1 = rt_thread_create("rgb1_entry", rgb1_entry, RT_NULL, 1024, 25, 10);
     if (tid1 != RT_NULL)
     {
         rt_thread_startup(tid1);
