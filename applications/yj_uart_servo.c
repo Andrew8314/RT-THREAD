@@ -38,7 +38,7 @@ void level_servo_angle(int cx)
    // 根据偏移量调整舵机角度
     uint32_t servo_value = LEVEL_SERVO_CENTER;
     // 更新舵机控制值
-    servo_value -= cx - 128;
+    servo_value += cx - 128;
     // 限制舵机角度范围
     if (servo_value < LEVEL_SERVO_MIN) servo_value = LEVEL_SERVO_MIN;
     if (servo_value > LEVEL_SERVO_MAX) servo_value = LEVEL_SERVO_MAX;
@@ -53,7 +53,7 @@ void vertical_servo_angle(int cy)
    // 根据偏移量调整舵机角度
     uint32_t servo_value = VERTICAL_SERVO_CENTER;
     // 更新舵机控制值
-    servo_value -= cy - 128;
+    servo_value += cy - 128;
     // 限制舵机角度范围
     if (servo_value < VERTICAL_SERVO_MIN) servo_value = VERTICAL_SERVO_MIN;
     if (servo_value > VERTICAL_SERVO_MAX) servo_value = VERTICAL_SERVO_MAX;

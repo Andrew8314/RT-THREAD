@@ -20,7 +20,7 @@ int main(void)
     thread_rgb1();
 
     uart_sample();
-    //pwm_init();
+    pwm_init();
 
 
     rt_thread_delay(300);  // 延迟秒
